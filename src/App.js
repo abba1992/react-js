@@ -11,11 +11,12 @@ class App extends Component {
   // }
   state = {
     items: [
-      { id: 1, item: 'shoe', qty: 1 },
-      { id: 2, item: 'umbrella', qty: 4 },
-      { id: 3, item: 'clock', qty: 1 },
+      { id: 1, item: 'shoe', qty: 0 },
+      { id: 2, item: 'umbrella', qty: 0 },
+      { id: 3, item: 'clock', qty: 0 },
     ],
-    total: null
+    total: null,
+    disable: false
   }
   addItemHandler = (id) => {
     const itemId = this.state.items.findIndex(index => {
@@ -36,17 +37,22 @@ class App extends Component {
       return index.id === id + 1;
     });
     const item = { ...this.state.items[itemId] };
+    // ********************* //
+    for (let i in item) {
+      if (item[i] <= 0)
+        return;
+    }
+    // ******************** //
     const oldCount = item.qty
     const newCount = oldCount - 1;
-    // if (newCount < 0) {
-    //   return
-    // }
     const items = [...this.state.items];
     items[itemId].qty = newCount
     this.setState(prevState => {
       return { items: prevState.items }
     })
   }
+
+
   // totalQuantityHandler = () => {
 
 
@@ -65,10 +71,12 @@ class App extends Component {
       minus={() => this.minusItemHandler(index, item.id)}
     />)
     const items = this.state.items.map(item => item.qty).reduce((sum, current) => sum + current, 0);
+    const disabledInfo = items <= 0;
     return (
       <div>
         {purchase}
         <h1>Total: {items}</h1>
+        <button disabled={disabledInfo}>Go to Cart</button>
       </div>
     )
   }
